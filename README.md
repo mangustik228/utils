@@ -20,7 +20,7 @@ pip install dist/proxy_manager-0.1.tar.gz
 
 Установка из venv: 
 ```bash 
-pip install /home/user/dev/packages/proxy_manager/dist/proxy_manager-0.1.tar.gz
+pip install /home/user/dev/packages/proxy_manager
 ```
 
 ## Вариант установки 2 
