@@ -5,12 +5,14 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name="mangust228",
-    version="0.3",
-    description="My custom library",
+    version="0.5",
+    description="Library for take current proxy from API",
     author="mangust228",
     author_email="bacek.mangust@gmail.com",
     packages=find_packages(),
     long_description=long_description,
+    long_description_content_type='text/markdown',
+    url='https://github.com/mangustik228/proxy_manager',
     install_requires=[
         'requests',
         'pandas',

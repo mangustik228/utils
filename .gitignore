@@ -2,3 +2,4 @@ build
 dist 
 proxy_manager.egg-info
 mangust228.egg-info
+setup.py
