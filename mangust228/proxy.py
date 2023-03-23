@@ -1,11 +1,3 @@
-'''
-Модуль для получения актуальных прокси. Пример: 
-```python
-proxies = ProxyManager(token)
-proxies.get() # Возвращает список актульных прокси
-```
-'''
-
 from datetime import date, timedelta, datetime
 import requests
 from loguru import logger
@@ -15,7 +7,11 @@ from pydantic import BaseModel
 
 
 class ProxyManager:
-    def __init__(self, token:int, url='http://proxy.mangust228.ru/v1'):
+    def __init__(self, token:int, url: str):
+        '''
+        url - адрес по которому посылать запрос для получения списка актуальных прокси
+        token - токен для опознания на сервере
+        '''
         self.url = url 
         self.token = token 
         self.types = {'string', 'dict[str,str]','playwright'}

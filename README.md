@@ -1,47 +1,73 @@
-### proxy_manager
+### Набор утилит для парсинга
 
-Модуль для получения актуальных прокси по своей апи. 
+## ProxyManager()
 
-Использование: 
-Сохраняем в папке `/home/user/dev/packages/proxy_manager`
+При активном использовании прокси во время парсинга возникает проблема постоянного перекидывания прокси из проекта в проект.  
 
+Для использования данного модуля: необходимо развернуть АПИ на сервере. [использованное api](https://github.com/mangustik228/api_proxy)
 
-## Вариант установки 1
-Создаем дистрибутив с помощью команды:
-```bash 
-cd proxy_manager
-python3 setup.py sdist
-```
-
-Можно установить глобально
+Установка:
 ```bash
-pip install dist/proxy_manager-0.1.tar.gz
+pip install mangust228
 ```
-
-Установка из venv: 
-```bash 
-pip install /home/user/dev/packages/proxy_manager
-```
-
-## Вариант установки 2 
-Собираем: 
-```bash 
-python3 setup.py bdist_wheel 
-```
-
-Устанавливаем
-```bash
-pip install /home/user/dev/packages/proxy_manager/dist/proxy_manager-0.1.tar.gz
-```
+---
 
 
-Подключаем 
+### Пример получения актуальных прокси:
 ```python
-from proxy_manager import ProxyManager
+from mangust228 import ProxyManager
+
+proxies = ProxyManager('your_token', 'your_url')
+proxies.get('string') 
+# [{http://user:pass@127.0.0.1:8000},...]
+proxies.get('dict[str,str]')
+# [{'server':'http://127.0.0.1:8000','username':'user','password':'pass'}, ...]
+proxies.get('playwright')
+# [{'proxy':{'server':'http://127.0.0.1:8000','username':'user','password':'pass'}},...]
 ```
 
-Пример использования: 
+---
+
+### Пример получения списка всех прокси (включая просроченные)
 ```python
-proxies = ProxyManager(token)
-proxies.get() # Возвращает список актульных прокси
-```            
+proxies = ProxyManager('your_token', 'your_url')
+proxies.get_full()
+```
+Можно указать путь (только csv!), тогда результат будет сохранен в `csv` файл
+```python
+proxies.get_full('all_proxies.csv')
+```
+---
+
+### Пример добавления прокси
+```python
+data = [{
+    'server':'127.0.0.1',
+    'port':8000,
+    'username':'user',
+    'password':'pass',
+    'expire':'2023-12-31',
+    'service':'example.service.com'
+},...]
+proxies = ProxyManager(token, url)
+proxies.post(data=data)
+```
+
+Можно добавлять из файлов excel или csv
+```python
+proxies.post(path='example.csv')
+```
+---
+### Пример удаления прокси
+```python
+proxies.delete(id)
+```
+---
+### Пример изменения прокси
+```python
+data = {
+    'id':1,
+    'username':'John'
+}
+proxies.put(data)
+```
