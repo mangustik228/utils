@@ -69,3 +69,40 @@ data = {
 }
 proxies.put(data)
 ```
+
+
+## CaptchaAi()
+Разгадывалка капчи с сервиса: captchaai.com [Документация](https://captchaai.com/api-docs.php)
+
+На данный момент реализовано только разгадывание картинок.
+
+
+Пример использования: 
+```python
+# sync
+captcher = CaptchaAi(token)
+result = captcher.solve_picture(image)
+
+# async
+captcher = CaptchaAi(token, async_=True)
+result = await captcher.solve_picture(image)
+
+```
+
+Параметры которые можно передать при инициализации CaptchaAi(): 
+- `token` токен который получаем от сервиса
+- `async_` передаем, если надо вызывать в асинхронном коде
+- `threads` сколько допустимо параллельно запросов(зависит от тарифа). В данный момент не реализовано.
+
+Параметры метода solve_picture(): 
+- `timeout` время между отправкой изображения на сервис и получения данных (default=5)
+- `retries` сколько раз попытаться получить ответ от сервера(default=3)
+- `phrase` см.документацию [link](https://captchaai.com/api-docs.php) 
+- `regsense` см.документацию [link](https://captchaai.com/api-docs.php) 
+- `numeric` см.документацию [link](https://captchaai.com/api-docs.php) 
+- `calc` см.документацию [link](https://captchaai.com/api-docs.php) 
+- `min_len` см.документацию [link](https://captchaai.com/api-docs.php) 
+- `max_len` см.документацию [link](https://captchaai.com/api-docs.php) 
+- `language` см.документацию [link](https://captchaai.com/api-docs.php) 
+- `lang` см.документацию [link](https://captchaai.com/api-docs.php) 
+Параметры `json` & `method` НЕ ПОДДЕРЖИВАЮТСЯ.

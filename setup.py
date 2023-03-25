@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name="mangust228",
-    version="0.5",
+    version="0.6",
     description="Library for take current proxy from API",
     author="mangust228",
     author_email="bacek.mangust@gmail.com",
