@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name="mangust228",
-    version="0.6",
+    version="0.6.2",
     description="Library for take current proxy from API",
     author="mangust228",
     author_email="bacek.mangust@gmail.com",
@@ -17,7 +17,10 @@ setup(
         'requests',
         'pandas',
         'pydantic',
-        'loguru'
+        'loguru',
+        'aiohttp',
+        'asyncio',
+        
     ],
     classifiers=[
     'Programming Language :: Python :: 3',

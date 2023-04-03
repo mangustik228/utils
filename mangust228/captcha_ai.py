@@ -1,5 +1,4 @@
 from loguru import logger
-import json
 import asyncio 
 import aiohttp
 import requests
@@ -64,9 +63,7 @@ class CaptchaAi:
                 'json':1, 
                 'id':key}
 
-    @logger.catch
     def _sync_get_key_picture(self, image:bytes, data:dict) -> str:
-        logger.info(f'url = {self.url_solve_picture}\n{data = }')
         response = requests.post(self.url_solve_picture, 
                                  params=data, 
                                  files={'file':image})
@@ -77,7 +74,6 @@ class CaptchaAi:
                             f'{response.status_code = }\n{response.content}')
 
 
-    @logger.catch
     def _sync_get_result(self, retries:int, timeout:int, key:str):
         params = self._get_picture_params(key)
         for _ in range(retries):
@@ -127,7 +123,7 @@ class CaptchaAi:
                 try:
                     if resp.status == 200: 
                         result = await resp.json(content_type='text/html')
-                        logger.info(result)                
+                        logger.debug(f'{result = }')                
                         return result.get('request')
                     else: 
                         raise Exception(f'Не получилось послать... {resp.status = }, {await resp.text() = }')
