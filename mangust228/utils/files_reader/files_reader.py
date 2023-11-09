@@ -16,15 +16,21 @@ def get_files_paths(base_path: str, file_format: str, sep: str = "_"):
     sep : str, optional
         Разделитель для параметров, by default "_"
     '''
-
-    def get_info(fp: str):
+    def get_info(fp: str, sep: str):
         params = fp.split("/")[-1].split(".")[0]
         params = params.replace("___", ".").replace("__", "/")
-        return fp, *params.split(sep)
+        result = [fp]
+        for param in params.split(sep):
+            print(sep)
+            if param.isdigit():
+                result.append(int(param))
+            else:
+                result.append(param)
+        return result
 
     for path in os.listdir(base_path):
         current_path = f"{base_path}/{path}"
         if os.path.isdir(current_path):
-            yield from get_files(current_path, file_format)
+            yield from get_files_paths(current_path, file_format, sep)
         elif current_path[-len(file_format):] == file_format:
-            yield get_info(current_path)
+            yield get_info(current_path, sep)

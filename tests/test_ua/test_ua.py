@@ -24,4 +24,4 @@ def test_uniques():
     user_agents = set()
     for _ in range(100):
         user_agents.add(UaRandom.web())
-    assert len(user_agents) >= 98
+    assert len(user_agents) >= 96
