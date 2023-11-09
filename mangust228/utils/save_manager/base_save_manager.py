@@ -3,11 +3,13 @@ from datetime import datetime
 
 
 class BaseSaveManager:
+    allowed_formats = {".html", ".json"}
+
     def __init__(self,
                  base_path: str = "data",
                  compression: bool = False,
                  max_files: int = 5000,
-                 format: str = ".html"):
+                 file_format: str = ".html"):
         self.compression = compression
         self.max_files = max_files
         self.base_path = base_path
@@ -15,7 +17,10 @@ class BaseSaveManager:
             os.makedirs(base_path)
         self.today_path = self._get_today_path()
         self.files_in_folder = None
-        self.format = format
+        if file_format not in self.allowed_formats:
+            raise ValueError(
+                f"format to Saver must be equal: {self.allowed_formats}")
+        self.format = file_format
         self._get_current_folder()
 
     def _get_today_path(self):
@@ -51,5 +56,5 @@ class BaseSaveManager:
         self._create_folder(self.full_folder_path)
 
     def _get_path_to_file(self, file_name: int):
-        path = f"{self.full_folder_path}/{file_name}"
-        return path + ".tar.xz" if self.compression else path + self.format
+        path = f"{self.full_folder_path}/{file_name}{self.format}"
+        return path + ".xz" if self.compression else path

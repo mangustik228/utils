@@ -1,19 +1,11 @@
-import pandas as pd
+from mangust228.utils import UaRandom
+from user_agents import parse
 
-data = [
-    {
-        "manager": "Vasiliy",
-        "sales": 2
-    },
-    {
-        "manager": "Vasiliy",
-        "sales": 3
-    },
-    {
-        "manager": "Vasiliy",
-        "sales": 4
-    },
-]
 
-df = pd.DataFrame(data)
-df.pivot_table(columns=["manager"], aggfunc=["sum", "count"])
+user_agents = set()
+for _ in range(100):
+    user_agent = UaRandom.web()
+    if user_agent in user_agents:
+        print(user_agent)
+    user_agents.add(UaRandom.web())
+# assert len(user_agents) >= 99

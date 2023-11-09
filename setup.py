@@ -20,7 +20,7 @@ setup(
         'loguru',
         'aiohttp',
         'asyncio',
-
+        'aiofiles'
     ],
     classifiers=[
         'Programming Language :: Python :: 3',

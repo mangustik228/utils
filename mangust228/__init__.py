@@ -1,2 +1,4 @@
-from .proxy import ProxyManager
-from .captcha_ai import CaptchaAi
+from .utils import *
+
+# from .proxy import ProxyManager
+# from .captcha_ai import CaptchaAi

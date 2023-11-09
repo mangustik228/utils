@@ -1,4 +1,6 @@
 from .base_save_manager import BaseSaveManager
+import aiofiles
+import lzma
 
 
 class AsyncSaveManager(BaseSaveManager):
@@ -14,9 +16,10 @@ class AsyncSaveManager(BaseSaveManager):
             await self._save_html(content, path)
 
     async def _save_xz(self, content: str, path: str):
+        bytes_content = content.encode("utf-8")
+        compressed_data = lzma.compress(bytes_content)
         async with aiofiles.open(path, 'wb') as file:
-            compressed_data = lzma.compress(content.encode())
-            await file.write(compressed_data)
+            file.write(compressed_data)
 
     async def _save_html(self, content: str, path: str):
         async with aiofiles.open(path, "w") as file:

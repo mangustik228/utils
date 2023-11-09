@@ -1,5 +1,6 @@
 import tarfile
 from .base_save_manager import BaseSaveManager
+import lzma
 
 
 class SyncSaveManager(BaseSaveManager):
@@ -20,6 +21,7 @@ class SyncSaveManager(BaseSaveManager):
             file.write(content)
 
     def _save_xz(self, content: str, path: str):
-        with tarfile.open(path, 'w:xz') as file:
-            compressed_data = lzma.compress(content.encode())
-            await file.write(compressed_data)
+        bytes_content = content.encode("utf-8")
+        compressed_data = lzma.compress(bytes_content)
+        with open(path, "wb") as file:
+            file.write(bytes_content)
