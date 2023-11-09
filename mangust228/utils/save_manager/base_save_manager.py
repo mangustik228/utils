@@ -11,8 +11,26 @@ class BaseSaveManager:
                  base_path: str = "data",
                  compression: bool = False,
                  max_files: int = 5000,
-                 file_format: str = ".html"):
+                 file_format: str = ".html",
+                 sep: str = "_"):
+        '''
+        class for save contents in folders
+
+        Parameters
+        ----------
+        base_path : str, optional
+            base path, where will save files, by default "data"
+        compression : bool, optional
+            if True - files will save in with .xz compression, by default False
+        max_files : int, optional
+            How many files can be in ones folder, by default 5000
+        file_format : str, optional
+            Format of files, allowed values: {.json, .html}, by default ".html"
+        sep : str, optional
+            Separator for separate params in file_name, by default "_"
+        '''
         self.compression = compression
+        self.sep = sep
         self.max_files = max_files
         self.base_path = base_path
         if not os.path.exists(base_path):
@@ -61,8 +79,18 @@ class BaseSaveManager:
         path = f"{self.full_folder_path}/{file_name}{self.format}"
         return path + ".xz" if self.compression else path
 
-    def _get_file_name_from_args(self, *file_name):
+    def _get_file_name_from_args(self, *file_name: list[str]):
         if not file_name:
             raise EmptyFileName(
                 "Failed to receive arguments for filename designation.")
-        return str(reduce(lambda a, b: f"{a}_{b}", file_name))
+
+        result = ""
+        for name in file_name:
+            if isinstance(name, str):
+                name = name.replace(
+                    "https://", "").replace("/", "__").replace(".", "___")
+            if isinstance(name, int):
+                name = str(name)
+            result += f"{self.sep if result else ''}{name}"
+
+        return result

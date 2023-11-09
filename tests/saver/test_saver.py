@@ -52,3 +52,20 @@ def test_with_exist_folder(folder_path):
     for i in range(15):
         saver.save_content("hello world", i)
     assert len(os.listdir(f"{folder_path}/2023/September/01/49")) == 15
+
+
+def test_with_url_file(folder_path):
+    saver = SyncSaveManager(folder_path)
+    content = "hello world"
+    url = "https://example.com/world&blank=True"
+    saver.save_content(content, url)
+    assert os.path.exists(
+        f"{folder_path}/2023/September/01/1/example___com__world&blank=True.html")
+
+
+def test_custom_separator(folder_path):
+    saver = SyncSaveManager(folder_path, sep="|")
+    content = "hello world"
+    saver.save_content(content, "hello", "world", 1, 3)
+    assert os.path.exists(
+        f"{folder_path}/2023/September/01/1/hello|world|1|3.html")

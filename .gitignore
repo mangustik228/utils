@@ -11,4 +11,5 @@ venv/
 test.py 
 terminal.ipynb
 .pytest_cache
-__pycache__/
+__pycache__
+src

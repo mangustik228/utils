@@ -5,6 +5,9 @@ from .base_save_manager import BaseSaveManager
 
 class SyncSaveManager(BaseSaveManager):
     def save_content(self, content: str, *file_name) -> None:
+        '''
+        *file_name - аргументы которые будут включены в названия файла. можно использовать url
+        '''
         fp = self._get_file_name_from_args(*file_name)
 
         if self.files_in_folder >= self.max_files:
