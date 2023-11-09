@@ -4,12 +4,14 @@ import lzma
 
 
 class AsyncSaveManager(BaseSaveManager):
-    async def save_content(self, content: str, file_name: str) -> None:
+    async def save_content(self, content: str, *file_name) -> None:
+        fp = self._get_file_name_from_args(*file_name)
+
         if self.files_in_folder >= self.max_files:
             self._update_current_folder()
         self.files_in_folder += 1
 
-        path = self._get_path_to_file(file_name)
+        path = self._get_path_to_file(fp)
         if self.compression:
             await self._save_xz(content, path)
         else:

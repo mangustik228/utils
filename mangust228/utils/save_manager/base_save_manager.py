@@ -1,5 +1,7 @@
 import os
 from datetime import datetime
+from mangust228.exceptions import EmptyFileName
+from functools import reduce
 
 
 class BaseSaveManager:
@@ -58,3 +60,9 @@ class BaseSaveManager:
     def _get_path_to_file(self, file_name: int):
         path = f"{self.full_folder_path}/{file_name}{self.format}"
         return path + ".xz" if self.compression else path
+
+    def _get_file_name_from_args(self, *file_name):
+        if not file_name:
+            raise EmptyFileName(
+                "Failed to receive arguments for filename designation.")
+        return str(reduce(lambda a, b: f"{a}_{b}", file_name))

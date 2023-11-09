@@ -1,11 +1,12 @@
-from mangust228.utils import UaRandom
-from user_agents import parse
+from functools import reduce
+from mangust228.exceptions import EmptyFileName
 
 
-user_agents = set()
-for _ in range(100):
-    user_agent = UaRandom.web()
-    if user_agent in user_agents:
-        print(user_agent)
-    user_agents.add(UaRandom.web())
-# assert len(user_agents) >= 99
+def foo(hello: str, *file_name):
+    if not file_name:
+        raise EmptyFileName("jopa")
+    result = reduce(lambda a, b: f"{a}_{b}", file_name)
+    print(type(result))
+
+
+foo("world", 1)

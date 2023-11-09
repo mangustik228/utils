@@ -1,15 +1,17 @@
-import tarfile
-from .base_save_manager import BaseSaveManager
 import lzma
+
+from .base_save_manager import BaseSaveManager
 
 
 class SyncSaveManager(BaseSaveManager):
-    def save_content(self, content: str, file_name: str) -> None:
+    def save_content(self, content: str, *file_name) -> None:
+        fp = self._get_file_name_from_args(*file_name)
+
         if self.files_in_folder >= self.max_files:
             self._update_current_folder()
         self.files_in_folder += 1
 
-        path = self._get_path_to_file(file_name)
+        path = self._get_path_to_file(fp)
 
         if self.compression:
             self._save_xz(content, path)
@@ -24,4 +26,4 @@ class SyncSaveManager(BaseSaveManager):
         bytes_content = content.encode("utf-8")
         compressed_data = lzma.compress(bytes_content)
         with open(path, "wb") as file:
-            file.write(bytes_content)
+            file.write(compressed_data)
