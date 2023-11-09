@@ -7,3 +7,4 @@ instruction.md
 .env
 test_sync.py
 test_async.py
+venv/
