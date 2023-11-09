@@ -8,3 +8,7 @@ instruction.md
 test_sync.py
 test_async.py
 venv/
+test.py 
+terminal.ipynb
+.pytest_cache
+__pycache__/

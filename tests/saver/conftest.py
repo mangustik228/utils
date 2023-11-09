@@ -6,6 +6,8 @@ from freezegun import freeze_time
 
 @pytest.fixture()
 def folder_path():
+    if not os.path.exists("tests/src"):
+        os.makedirs("tests/src")
     fp = "tests/src/test_data/"
     if os.path.exists(fp):
         shutil.rmtree(fp)
