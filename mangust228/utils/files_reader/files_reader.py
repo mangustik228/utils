@@ -1,32 +1,40 @@
 import os
+from collections import namedtuple
+from typing import Generator
 
 
-def get_files_paths(base_path: str, file_format: str, sep: str = "_"):
+File = namedtuple("File", ["path", "params"])
+
+
+def get_files_paths(base_path: str, file_format: str, sep: str = "_") -> Generator[File, None, None]:
     '''
-    Возвращает генератор кортежей: 
-    Второй элемент - путь 
-    Третий и последующие - параметры которые были переданы при сохранении
+    Функция для итерации по файлам с вложенной древовидной структурой.
 
     Parameters
     ----------
     base_path : str
-        Базовая папка в которой искать файлы
+        Путь к каталогу в котором искать файлы с нужным расширением
     file_format : str
-        Какой формат файлов искать
+        расширение файлов, которые будут возвращены
     sep : str, optional
-        Разделитель для параметров, by default "_"
+        Используемый разделитель параметров в наименовании файла,, by default "_"
+
+    Yields
+    ------
+    Generator[File, None, None]
+        _description_
     '''
+
     def get_info(fp: str, sep: str):
         params = fp.split("/")[-1].split(".")[0]
         params = params.replace("___", ".").replace("__", "/")
-        result = [fp]
+        result_params = []
         for param in params.split(sep):
-            print(sep)
             if param.isdigit():
-                result.append(int(param))
+                result_params.append(int(param))
             else:
-                result.append(param)
-        return result
+                result_params.append(param)
+        return File(path=fp, params=result_params)
 
     for path in os.listdir(base_path):
         current_path = f"{base_path}/{path}"
