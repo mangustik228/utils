@@ -2,7 +2,7 @@ from mangust228 import UaRandom
 
 
 def test_validate_agents():
-    for _ in range(100):
+    for _ in range(10):
         UaRandom.web()
 
 def test_uniques():

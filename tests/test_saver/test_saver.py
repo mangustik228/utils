@@ -1,71 +1,77 @@
-import os
-from mangust228.utils import SyncSaveManager, AsyncSaveManager
-import pytest
-from mangust228.exceptions import EmptyFileName
 import lzma
+import os
+
+import pytest
+import shutil
+from mangust228.utils import SyncSaveManager, AsyncSaveManager
+from mangust228.utils.save_manager._exceptions import ExcExpectedNamesArguments
 
 
-def test_saver_base(folder_path):
-    SyncSaveManager(folder_path)
-    assert os.path.exists(folder_path), "folder not exist"
-    assert os.path.exists(f"{folder_path}/2023/September/01/1")
 
+def test_path_base():
+    saver = SyncSaveManager()
+    assert saver.folder_path == "data/2023/09/15/12/" 
+    
+def test_path_slash_in_end(): 
+    saver = SyncSaveManager("hello/world/")
+    assert saver.folder_path == "hello/world/2023/09/15/12/" 
+    
+def test_path_slash_in_start():
+    saver = SyncSaveManager("/hello/world/")
+    assert saver.folder_path == "/hello/world/2023/09/15/12/" 
+    
+    
+def test_sync_json():
+    saver = SyncSaveManager("tests/src/")
+    data = {"hello":"world"}
+    saver.save_json(data, "hello","world")
+    assert os.path.exists("tests/src/2023/09/15/12/hello_world.json")
+    shutil.rmtree("tests/src/2023/09/15/12/")
 
-def test_saver_exception(folder_path):
-    with pytest.raises(ValueError):
-        SyncSaveManager(folder_path, file_format=".xa")
+def test_sync_uuid_json():
+    base_path = "tests/src/uuid/"
+    shutil.rmtree(base_path)
+    saver = SyncSaveManager(base_path, add_uuid=True, compress=True)
+    data = {"hello":"world"}
+    saver.save_json(data, "hello","second")
+    files = os.listdir(f"{base_path}/2023/09/15/12/")
+    assert len(files) == 1 
+    assert files[0].startswith("hello_second_")
+    assert files[0].endswith(".json.xz")
+    
+    
+def test_sync_html():
+    saver = SyncSaveManager("tests/src")
+    saver.save_html("hello world", "this", 3, "seller")
+    assert os.path.exists("tests/src/2023/09/15/12/this_3_seller.html")
+    
+    
+def test_sync_html_emtpy_names_error():
+    saver = SyncSaveManager("tests/src")
+    with pytest.raises(ExcExpectedNamesArguments): 
+        saver.save_html("hello world")
+        
+@pytest.mark.asyncio 
+async def test_async_html_base():
+    saver = AsyncSaveManager("tests/src")
+    await saver.save_html("this is test message", "hello", "async", 2)
+    assert os.path.exists("tests/src/2023/09/15/12/hello_async_2.html")
 
-
-def test_save_date(folder_path):
-    saver = SyncSaveManager(folder_path, max_files=50)
-    content = "hello"
-    for i in range(101):
-        saver.save_content(content, f"file_{i}")
-    assert len(os.listdir(f"{folder_path}/2023/September/01/1/")) == 50
-    assert len(os.listdir(f"{folder_path}/2023/September/01")) == 3
-
-
-def test_save_xz(folder_path):
-    saver = SyncSaveManager(folder_path, compression=True)
-    content = "hello world"
-    saver.save_content(content, "world")
-    file_path = f"{folder_path}/2023/September/01/1/world.html.xz"
-    assert os.path.exists(file_path)
-
-    with open(file_path, "rb") as file:
-        bytes_data = file.read()
-        read_content = lzma.decompress(bytes_data)
-    assert content == read_content.decode("utf-8")
-
-
-def test_empty_name(folder_path):
-    saver = SyncSaveManager(folder_path)
-    content = "hello world"
-    with pytest.raises(EmptyFileName):
-        saver.save_content(content)
-
-
-def test_with_exist_folder(folder_path):
-    for i in range(1, 50):
-        os.makedirs(f"{folder_path}/2023/September/01/{i}")
-    saver = SyncSaveManager(folder_path)
-    for i in range(15):
-        saver.save_content("hello world", i)
-    assert len(os.listdir(f"{folder_path}/2023/September/01/49")) == 15
-
-
-def test_with_url_file(folder_path):
-    saver = SyncSaveManager(folder_path)
-    content = "hello world"
-    url = "https://example.com/world&blank=True"
-    saver.save_content(content, url)
-    assert os.path.exists(
-        f"{folder_path}/2023/September/01/1/example___com__world&blank=True.html")
-
-
-def test_custom_separator(folder_path):
-    saver = SyncSaveManager(folder_path, sep="|")
-    content = "hello world"
-    saver.save_content(content, "hello", "world", 1, 3)
-    assert os.path.exists(
-        f"{folder_path}/2023/September/01/1/hello|world|1|3.html")
+@pytest.mark.asyncio
+async def test_async_html_correct_xz():
+    saver = AsyncSaveManager("tests/src", compress=True)
+    expect = "tests/src/2023/09/15/12/hello_async_3.html.xz"
+    msg = "this is second test message"
+    result = await saver.save_html(msg, "hello", "async", 3)
+    assert expect == result 
+    with open(expect, "rb") as fp: 
+        compressed_content = fp.read()
+        content = lzma.decompress(compressed_content).decode()
+    assert content == msg
+    
+@pytest.mark.asyncio
+async def test_async_json():
+    saver = AsyncSaveManager("tests/src")
+    expect = "tests/src/2023/09/15/12/test_async_json_5.json"
+    result = await saver.save_json({"hello":"world"}, "test", "async", "json", 5)
+    assert result == expect

@@ -33,11 +33,6 @@ class UaRandom:
         version, engine = getattr(Engines, browser)
         browser_string = getattr(Browsers, browser)(version)
 
-        result = "Mozilla/5.0 ("
-        result += os_system
-        if random.choice([True, False]):
-            result += f"; rv:{version}"
-        result += ") "
-        result += engine
-        result += f" {browser_string}"
-        return result
+        rv = f"; rv:{version}" if random.choice([True, False]) else ""
+        return f"Mozilla/5.0 ({os_system}{rv}) {engine} {browser_string}"
+
