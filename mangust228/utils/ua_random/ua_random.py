@@ -1,8 +1,9 @@
 
 import random
-from .oses import Oses
-from .engines import Engines
-from .browsers import Browsers
+
+from ._browsers import Browsers
+from ._engines import Engines
+from ._oses import Oses
 
 
 class UaRandom:
@@ -24,7 +25,7 @@ class UaRandom:
     _web_browsers = ["chrome", "firefox", "safari"]
 
     @classmethod
-    def web(cls, browser: str = None):
+    def web(cls, browser: str | None = None) -> str:
         if browser is None:
             browser = random.choice(cls._web_browsers)
 
@@ -39,5 +40,4 @@ class UaRandom:
         result += ") "
         result += engine
         result += f" {browser_string}"
-
         return result
