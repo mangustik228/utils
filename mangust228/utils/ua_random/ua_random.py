@@ -35,4 +35,3 @@ class UaRandom:
 
         rv = f"; rv:{version}" if random.choice([True, False]) else ""
         return f"Mozilla/5.0 ({os_system}{rv}) {engine} {browser_string}"
-

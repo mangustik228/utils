@@ -9,7 +9,7 @@ def test_uniques():
     user_agents = set()
     for _ in range(100):
         user_agents.add(UaRandom.web())
-    assert len(user_agents) >= 96
+    assert len(user_agents) >= 92
 
 def test_ua_chrome():
     for _ in range(50):

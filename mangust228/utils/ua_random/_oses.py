@@ -1,4 +1,5 @@
 import random
+
 from ._descriptor import BaseDescriptor
 
 OS_VERSIONS = {
@@ -28,31 +29,31 @@ OS_VERSIONS = {
 class _BaseOs(BaseDescriptor):
     lst = []
     weight = []
-    
+
     def __get__(self, instance: None, owner: type):
         super().__get__(instance, owner)
         return random.choices(self.lst, weights=self.weight)[0]
+
 
 class _ChromeOs(_BaseOs):
     name = "chrome"
     lst = [i[0] for i in OS_VERSIONS["chrome"]]
     weight = [i[1] for i in OS_VERSIONS["chrome"]]
 
+
 class _FirefoxOs(_BaseOs):
     name = "firefox"
     lst = [i[0] for i in OS_VERSIONS["firefox"]]
     weight = [i[1] for i in OS_VERSIONS["firefox"]]
+
 
 class _SafariOs(_BaseOs):
     name = "safari"
     lst = [i[0] for i in OS_VERSIONS["safari"]]
     weight = [i[1] for i in OS_VERSIONS["safari"]]
 
-class Oses: 
+
+class Oses:
     chrome = _ChromeOs()
     firefox = _FirefoxOs()
     safari = _SafariOs()
-    
-    
-    
-    
