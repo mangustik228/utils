@@ -3,11 +3,12 @@ import asyncio
 import aiocsv
 import aiofiles
 import aiofiles.os as aos
-
+from ._logger import get_logger
 
 class _BaseAsyncFileDesciptor:
-    def __init__(self, path: str, fields_name: list[str]):
+    def __init__(self, path: str, fields_name: list[str], debug:bool=False):
         self.path = path
+        self.logger = get_logger(self.__class__.__name__, debug)
         self.fields_name = fields_name
         self._created = False 
         self._lock = asyncio.Lock()
@@ -41,19 +42,22 @@ class _BaseAsyncFileDesciptor:
         async with aiofiles.open(self.path, "a+") as afp:
             writer = aiocsv.AsyncDictWriter(afp, self.fields_name)
             await writer.writerow(data)
-        self._data.add(data["path"])
+        path = data["path"]
+        self._data.add(path)
+        return path 
 
 
 class _SuccessAsyncFileDesciptor(_BaseAsyncFileDesciptor):
     async def add(self, path: str):
         data = {self.fields_name[0]:path}
-        await self._write_data(data)
+        path = await self._write_data(data)
+        self.logger.debug(f'add success path/url: {path}')
 
 class _WrongAsyncFileDesciptor(_BaseAsyncFileDesciptor):
     async def add(self, path: str, exc: str):
         data = {self.fields_name[0]:path, self.fields_name[1]:exc}
-        await self._write_data(data)
-
+        path = await self._write_data(data)
+        self.logger.warning(f'add wrong path/url: {path}')
 
 class AsyncParsedManager:
     wrong = _WrongAsyncFileDesciptor("data/wrong.csv", ["path", "exc"])

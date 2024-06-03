@@ -3,13 +3,13 @@ from requests import Response as RequestResponse
 
 from ._schemas import ProxySchema
 from ._config import Settings
-from .logger import get_logger
+from ._logger import get_logger
 
 
 class BaseProxyManager:
     '''How to use: 
     '''
-    def __init__(self, log_to_file: bool = False, **config):
+    def __init__(self, debug:bool=False, **config):
         '''
         Could be next variables in kwargs: 
             url: str
@@ -23,7 +23,7 @@ class BaseProxyManager:
             ignore_hours: int 
         '''
         self.settings = Settings(**config)
-        self.logger = get_logger("proxy_rotation", log_to_file)
+        self.logger = get_logger(self.__class__.__name__, debug)
         self._create_params()
         self._create_data()
 

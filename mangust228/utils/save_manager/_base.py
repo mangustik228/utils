@@ -2,10 +2,11 @@ from datetime import datetime
 from uuid import uuid4
 
 from ._exceptions import ExcExpectedNamesArguments
+from ._logger import get_logger
 
 
 class BaseSaveManager:
-    def __init__(self, base_path: str = "data", add_uuid: bool = False, compress: bool = False):
+    def __init__(self, base_path: str = "data", add_uuid: bool = False, compress: bool = False, debug: bool= False):
         '''
         Saver for files
 
@@ -33,6 +34,7 @@ class BaseSaveManager:
         self.base_path = base_path
         self.add_uuid = add_uuid
         self.compress = compress
+        self.logger = get_logger(self.__class__.__name__, debug)
 
     @property
     def date_path(self):

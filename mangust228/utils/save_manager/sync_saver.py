@@ -23,6 +23,7 @@ class SyncSaveManager(BaseSaveManager):
         path = folder_path + file_name
         content = json.dumps(data, ensure_ascii=False)
         self._save_sync_file(content, path)
+        self.logger.debug(f"success saved: {path}")
         return path
 
     def save_html(self, content: str, *names: Any):
@@ -31,4 +32,5 @@ class SyncSaveManager(BaseSaveManager):
         os.makedirs(folder_path, exist_ok=True)
         path = folder_path + file_name
         self._save_sync_file(content, path)
+        self.logger.debug(f"success saved: {path}")
         return path

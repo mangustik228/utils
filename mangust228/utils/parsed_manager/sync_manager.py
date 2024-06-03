@@ -1,12 +1,14 @@
 import csv 
 import os 
+from ._logger import get_logger
 
 class _BaseSyncFileDesciptor:
-    def __init__(self, path: str, fields_name: list[str]):
+    def __init__(self, path: str, fields_name: list[str], debug: bool=False):
         self.path = path
         self.fields_name = fields_name
         self._created = False 
         self._data: set[str] = set()
+        self.logger = get_logger(self.__class__.__name__, debug)
 
     def _create_folder(self):
         if not self._created:
@@ -42,11 +44,13 @@ class _SuccessSyncFileDesciptor(_BaseSyncFileDesciptor):
     def add(self, path: str):
         data = {self.fields_name[0]:path}
         self._write_data(data)
+        self.logger.debug(f'add success path/url: {path}')
 
 class _WrongSyncFileDesciptor(_BaseSyncFileDesciptor):
     def add(self, path: str, exc: str):
         data = {self.fields_name[0]:path, self.fields_name[1]:exc}
         self._write_data(data)
+        self.logger.warning(f'add wrong path/url: {path}')
 
 
 class SyncParsedManager:

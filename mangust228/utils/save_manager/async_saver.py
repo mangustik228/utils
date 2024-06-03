@@ -33,6 +33,7 @@ class AsyncSaveManager(BaseSaveManager):
         await aos.makedirs(folder_path, exist_ok=True)
         path = folder_path + file_name
         await self._save_async_file(content, path)
+        self.logger.debug(f"success saved: {path}")
         return path
 
     async def save_html(self, content, *names: Any) -> str:
@@ -41,4 +42,5 @@ class AsyncSaveManager(BaseSaveManager):
         await aos.makedirs(folder_path, exist_ok=True)
         path = folder_path + file_name
         await self._save_async_file(content, path)
+        self.logger.debug(f"success saved: {path}")
         return path
