@@ -1,7 +1,9 @@
 from typing import Any, Sequence
-from sqlalchemy import delete, insert, select, update, func
+
+from sqlalchemy import delete, func, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import DeclarativeBase
+
 
 class AsyncBaseRepo[M: DeclarativeBase]:
     '''
@@ -27,7 +29,22 @@ class AsyncBaseRepo[M: DeclarativeBase]:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def add(self, **kwargs: Any) -> M:
+    def add_by_model(self, model: M) -> None:
+        ''' 
+        Add model and return None.
+        
+        Example: 
+        ```python
+        async with Repository() as repo: 
+            my_model = MyModel(**some_data)
+            repo.user.add_by_model(my_model)
+        ```
+        :param model: An instance of the SQLAlchemy model to be added.
+        :return: The added SQLAlchemy model instance.
+        '''
+        self.session.add(model)
+    
+    async def add_by_kwargs(self, **kwargs: Any) -> M:
         ''' Add an item and return the SQLAlchemy model instance.
         
         :param kwargs: Fields and values for the new record.

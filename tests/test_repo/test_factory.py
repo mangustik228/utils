@@ -25,13 +25,13 @@ def db():
 @pytest.mark.asyncio(scope="session")
 async def test_async_factory_add(db):
     async with MyFactory() as repo: 
-        result = await repo.user.add(name="Vasiliy")
+        result = await repo.user.add_by_kwargs(name="Vasiliy")
         assert result.id == 1 
 
 @pytest.mark.asyncio(scope="session")
 async def test_async_factory_get(db):
     async with MyFactory() as repo:
-        result = await repo.role.add(name="admin")
+        result = await repo.role.add_by_kwargs(name="admin")
         assert result.id == 1 
         
     async with MyFactory(commit=False) as repo: 
@@ -56,7 +56,7 @@ async def test_async_factory_empty_list(db):
 async def test_async_factory_get_many_limit_and_offset(db):
     async with MyFactory() as repo: 
         for i in range(10):
-            await repo.user.add(name=f'Vasiliy-{i}', surname=f'Ovchinnikov-{i//3}')    
+            await repo.user.add_by_kwargs(name=f'Vasiliy-{i}', surname=f'Ovchinnikov-{i//3}')    
     
     async with MyFactory() as repo: 
         result = await repo.user.get_many()
@@ -87,7 +87,7 @@ async def test_async_factory_count(db):
     async with MyFactory() as repo: 
         result = await repo.user.count()
         assert result == 0 
-        await repo.user.add(name="Vasiliy")
+        await repo.user.add_by_kwargs(name="Vasiliy")
     
     async with MyFactory() as repo: 
         result = await repo.user.count()
@@ -97,8 +97,8 @@ async def test_async_factory_count(db):
 async def test_async_factory_delete(db):
     async with MyFactory() as repo: 
         for i in ("admin","moderator","guest"):
-            await repo.role.add(name=i)
-            await repo.role.add(name=i)
+            await repo.role.add_by_kwargs(name=i)
+            await repo.role.add_by_kwargs(name=i)
     
     async with MyFactory() as repo: 
         await repo.role.delete(name="guest")
@@ -115,7 +115,7 @@ async def test_async_factory_delete(db):
 @pytest.mark.asyncio(scope="session")
 async def test_async_factory_update(db):
     async with MyFactory() as repo:
-        user = await repo.user.add(name="Kristina", surname="Kochi")
+        user = await repo.user.add_by_kwargs(name="Kristina", surname="Kochi")
         user_id = user.id
         assert user_id == 1 
     
@@ -136,3 +136,16 @@ async def test_async_factory_update_emtpy(db):
     async with MyFactory() as repo:
         result = await repo.user.update_by_id(id=5, name="world")
         assert result == None
+        
+        
+@pytest.mark.asyncio(scope="session")
+async def test_async_factory_add_by_model(db):
+    async with MyFactory() as repo: 
+        model = UserModel(name="Vasiliy", surname="Ovchinnikov")
+        result = repo.user.add_by_model(model)
+        assert result is None  
+        
+    
+    async with MyFactory() as repo: 
+        users = await repo.user.get_many(name="Vasiliy")
+        assert len(users) == 1  
