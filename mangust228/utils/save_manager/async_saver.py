@@ -9,14 +9,6 @@ from ._base import BaseSaveManager
 
 
 class AsyncSaveManager(BaseSaveManager):
-    '''Класс для сохранения файлов
-    Пример использования: 
-    ```python 
-    saver = AsyncSaveManager()
-    path = await saver.save_html(content, "seller_id", 2, "world")
-    # >> "data/2020/05/15/12/seller_id_2_world.html" 
-    '''
-
     async def _save_async_file(self, content: str, path: str):
         if not self.compress:
             async with aiofiles.open(path, "w") as fp:
@@ -44,3 +36,6 @@ class AsyncSaveManager(BaseSaveManager):
         await self._save_async_file(content, path)
         self.logger.debug(f"success saved: {path}")
         return path
+
+
+

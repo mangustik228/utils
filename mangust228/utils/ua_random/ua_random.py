@@ -7,21 +7,6 @@ from ._oses import Oses
 
 
 class UaRandom:
-    ''' 
-    Класс для получения рандомного user-agent
-    Пример использования: 
-    ```python
-
-    UaRandom.web()
-    >> "Mozilla/5.0 (X11; Ubuntu; Linux x86_64) Gecko/104 Firefox/104.0"
-
-    UaRandom.web("chrome")
-    >> ... 
-
-    ```
-
-    '''
-    ...
     _web_browsers = ["chrome", "firefox", "safari"]
 
     @classmethod

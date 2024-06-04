@@ -1,34 +1,34 @@
 '''
-### How to get: 
+### Example:
 
-```python 
+```python
 from proxy_manager import SyncProxyManager, AsyncProxyManager
 
-# Sync version: 
+# Sync version:
 with SyncProxyManager() as pm:
     proxy_1: ProxySchema = pm.get()
-    proxy_2: ProxySchema = pm.change_with_error(new_proxy, reason="just test")
+    proxy_2: ProxySchema = pm.change_with_error(new_proxy, reason="just a test")
     proxy_3: ProxySchema = pm.change_without_error(new_proxy)
-    pm.free(proxy_3) # Free proxy on the server 
-    
+    pm.free(proxy_3)  # Free proxy on the server
+
 # Async version:
 async with AsyncProxyManager() as pm:
     proxy_1: ProxySchema = await pm.get()
-    proxy_2: ProxySchema = await pm.change_with_error(new_proxy, reason="just test")
+    proxy_2: ProxySchema = await pm.change_with_error(new_proxy, reason="just a test")
     proxy_3: ProxySchema = await pm.change_without_error(new_proxy)
-    await pm.free(proxy_3) # Free proxy on the server 
+    await pm.free(proxy_3)  # Free proxy on the server
 ```
 
-### How to use response with different libraries: 
+### How to use response with different libraries:
 
 ```
-# 1 For use with requests `req_conn`
+# 1. For use with requests `req_conn`
 response = requests.get("http://example.com", proxies=proxy.req_conn)
 
-# 2 For use with httpx `httpx_conn`
+# 2. For use with httpx `httpx_conn`
 response = httpx.get("http://example.com", proxies=proxy.httpx_conn)
 
-# 3. For use with playwright `pw_conn` 
+# 3. For use with playwright `pw_conn`
 context = await browser.new_context(proxy=proxy.pw_conn)
 
 ```
@@ -51,11 +51,7 @@ PROXY_SERVICE_TYPE_ID=1
 PROXY_SERVICE_LOCATION_ID=1
 ```
 
-
 '''
-
-
-
 from ._schemas import ProxySchema
 from .async_manager import AsyncProxyManager
 from .sync_manager import SyncProxyManager
