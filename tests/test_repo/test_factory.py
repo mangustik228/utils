@@ -1,11 +1,8 @@
-import asyncio
-import random
-
 import pytest
 
 from mangust228.utils.repo import AsyncBaseRepo, AsyncBaseRepoFactory
 from tests.test_repo.utils import (Base, RoleModel, UserModel,
-                                   UserSchema, session_maker, sync_engine)
+                                   session_maker, sync_engine)
 
 
 class UserRepo(AsyncBaseRepo[UserModel]):
@@ -117,13 +114,15 @@ async def test_async_factory_delete(db):
         
 @pytest.mark.asyncio(scope="session")
 async def test_async_factory_update(db):
-    async with MyFactory() as repo: 
+    async with MyFactory() as repo:
         user = await repo.user.add(name="Kristina", surname="Kochi")
         user_id = user.id
         assert user_id == 1 
     
     async with MyFactory() as repo: 
-        await repo.user.update_by_id(user_id, surname="Ovchinnikova")
+        user = await repo.user.update_by_id(user_id, surname="Ovchinnikova")
+        assert user is not None 
+        assert user.id == 1 
     
     async with MyFactory() as repo: 
         user = await repo.user.get_one_or_none(id=user_id)
@@ -132,6 +131,8 @@ async def test_async_factory_update(db):
         assert user.surname == "Ovchinnikova"
         
         
-        
-        
-        
+@pytest.mark.asyncio(scope="session")
+async def test_async_factory_update_emtpy(db):
+    async with MyFactory() as repo:
+        result = await repo.user.update_by_id(id=5, name="world")
+        assert result == None

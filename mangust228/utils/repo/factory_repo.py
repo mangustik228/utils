@@ -45,8 +45,6 @@ class AsyncBaseRepoFactory(metaclass=_FactoryMeta):
     async with Repo() as repo: 
         await repo.user.add(data)
 
-    # OR
-
     async with Repo(commit=False) as repo:
         user = await repo.user.find({"id":1})
     ```
