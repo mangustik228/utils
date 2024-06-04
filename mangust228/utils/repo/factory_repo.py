@@ -9,6 +9,9 @@ from .exceptions import NotInitializedRepo
 
 class _LazyRepo:
     def __init__(self, repo_class: type):
+        '''
+        Descriptor class for lazy initialization of repositories.
+        '''
         self.repo_class = repo_class
 
     def __set_name__(self, owner: type["AsyncBaseRepoFactory"], name: str):
@@ -24,6 +27,9 @@ class _LazyRepo:
 
 
 class _FactoryMeta(type):
+    '''
+    Metaclass to automatically initialize _LazyRepo descriptors based on class annotations.
+    '''
     def __new__(cls, name: str, bases: tuple[type, ...], dct: dict):
         annotations: dict = dct.get("__annotations__", {})
         if annotations:
@@ -34,29 +40,33 @@ class _FactoryMeta(type):
 
 
 class AsyncBaseRepoFactory(metaclass=_FactoryMeta):
-    '''Example for use: 
+    '''
+    Factory base class to manage repository instances and transactions.
+
+    Example usage:
     ```python
     from connection import async_session
 
-    class Repo(FactoryRepoBase):
-        session = session_maker
-        user: UserRepo 
+    class Repo(AsyncBaseRepoFactory):
+        session = async_session
+        user: UserRepo
 
-    async with Repo() as repo: 
+    async with Repo() as repo:
         await repo.user.add(data)
 
     async with Repo(commit=False) as repo:
-        user = await repo.user.find({"id":1})
+        user = await repo.user.find({"id": 1})
     ```
     '''
     session: async_sessionmaker[AsyncSession]
 
     def __init__(self, commit: bool = True, debug: bool = False, **kwargs: Any):
-        '''kwargs is elements for session
-        for Example: 
-        ```python
-        async_engine, expire_on_commit=False
-        ```
+        '''
+        Initialize the factory with a session and optional commit control.
+
+        :param commit: Whether to commit changes automatically (default: True).
+        :param debug: Enable debug logging (default: False).
+        :param kwargs: Additional arguments for session configuration.
         '''
         self._session = self.session(**kwargs)
         self.commit = commit
