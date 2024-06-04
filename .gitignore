@@ -13,3 +13,4 @@ terminal.ipynb
 .pytest_cache
 __pycache__
 src
+docker-compose.yml
