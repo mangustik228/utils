@@ -7,6 +7,27 @@ from ._base import BaseSaveManager
 
 
 class SyncSaveManager(BaseSaveManager):
+    '''
+    File saver
+
+    Example usage:
+    ```python
+    saver = SyncSaveManager(add_uuid=True)
+    path = saver.save_json({"hello": "world"}, 5, 3, "daily")
+    print(path)  # "data/2024/05/29/22/5_3_daily.json"
+    ```
+
+    Parameters
+    ----------
+    base_path : str, optional
+        The base folder where all files will be saved, by default "data"
+    add_uuid : bool, optional
+        Option to add a UUID at the end of the file name to ensure unique file names, by default False
+    compress : bool, optional
+        Option to compress files using lzma when enabled, by default False
+    debug : bool, optional
+        Enable debug logging, by default False
+    '''
     def _save_sync_file(self, content: str, path: str):
         if not self.compress:
             with open(path, "w") as fp:

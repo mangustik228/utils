@@ -13,16 +13,15 @@ class ProxySchema(BaseModel):
     
     @property
     def req_conn(self):
-        return {"http": f"http://{self.username}:{self.password}@{self.server}:{self.port}"}
-    
-    @property 
-    def httpx_conn(self):
-        return f"http://{self.username}:{self.password}@{self.server}:{self.port}"
+        return {
+            "http": f"http://{self.username}:{self.password}@{self.server}:{self.port}",
+            "https": f"https://{self.username}:{self.password}@{self.server}:{self.port}"
+            }
     
     @property
     def pw_conn(self):
         return {
-            "server": f"http://{self.server}:{self.port}",
+            "server": f"https://{self.server}:{self.port}",
             "username": self.username,
             "password": self.password
         }

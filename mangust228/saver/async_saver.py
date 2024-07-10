@@ -9,6 +9,27 @@ from ._base import BaseSaveManager
 
 
 class AsyncSaveManager(BaseSaveManager):
+    '''
+    File saver
+
+    Example usage:
+    ```python
+    saver = AsyncSaveManager(base_path="example", compress=True)
+    path = await saver.save_html("this is content", "seller_id", 4, 5)
+    print(path)  # "example/2024/05/29/22/seller_id_4_5.html.xz"
+    ```
+
+    Parameters
+    ----------
+    base_path : str, optional
+        The base folder where all files will be saved, by default "data"
+    add_uuid : bool, optional
+        Option to add a UUID at the end of the file name to ensure unique file names, by default False
+    compress : bool, optional
+        Option to compress files using lzma when enabled, by default False
+    debug : bool, optional
+        Enable debug logging, by default False
+    '''
     async def _save_async_file(self, content: str, path: str):
         if not self.compress:
             async with aiofiles.open(path, "w") as fp:

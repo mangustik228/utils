@@ -10,6 +10,7 @@ class UserRepo(AsyncBaseRepo[UserModel]):
     model = UserModel
 
 class Repository(AsyncBaseRepoFactory):
+    session = session_maker
     # CAUTION: Use only annotation
     user: UserRepo 
     another_repo: AnotherRepo

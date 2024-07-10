@@ -7,34 +7,6 @@ from ._logger import get_logger
 
 class BaseSaveManager:
     def __init__(self, base_path: str = "data", add_uuid: bool = False, compress: bool = False, debug: bool= False):
-        '''
-        File saver
-
-        Example usage (async version):
-        ```python
-        saver = AsyncSaveManager(base_path="example", compress=True)
-        path = await saver.save_html("this is content", "seller_id", 4, 5)
-        print(path)  # "example/2024/05/29/22/seller_id_4_5.html.xz"
-        ```
-
-        Example usage (sync version):
-        ```python
-        saver = SyncSaveManager(add_uuid=True)
-        path = saver.save_json({"hello": "world"}, 5, 3, "daily")
-        print(path)  # "data/2024/05/29/22/5_3_daily.json"
-        ```
-
-        Parameters
-        ----------
-        base_path : str, optional
-            The base folder where all files will be saved, by default "data"
-        add_uuid : bool, optional
-            Option to add a UUID at the end of the file name to ensure unique file names, by default False
-        compress : bool, optional
-            Option to compress files using lzma when enabled, by default False
-        debug : bool, optional
-            Enable debug logging, by default False
-        '''
         base_path = base_path.rstrip("/")
         self.base_path = base_path
         self.add_uuid = add_uuid

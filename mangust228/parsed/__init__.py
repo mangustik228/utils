@@ -13,7 +13,7 @@ await ParsedManager.wrong.add("url/path", reason)
 # Adds a successfully parsed record
 await ParsedManager.success.add("url/path")  
 
-if ParsedManager.wrong.is_exist():
+if ParsedManager.wrong.is_exist("url/path"):
     pass  # This block is executed if the URL/path has been parsed before.
     
 '''
