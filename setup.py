@@ -15,8 +15,8 @@ extras['all'] = sum(extras.values(), [])
 
 setup(
     name="mangust228",
-    version="0.8.1",
-    description="Library for take current proxy from API",
+    version="0.8.22",
+    description="Lazy utils each I use sometimes",
     author="mangust228",
     author_email="bacek.mangust@gmail.com",
     packages=find_packages(),
