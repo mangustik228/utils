@@ -3,8 +3,8 @@ import os
 
 import pytest
 import shutil
-from mangust228.save_manager import SyncSaveManager, AsyncSaveManager
-from mangust228.save_manager._exceptions import ExcExpectedNamesArguments
+from mangust228.saver import SyncSaveManager, AsyncSaveManager
+from mangust228.saver._exceptions import ExcExpectedNamesArguments
 
 
 def test_path_base():

@@ -1,5 +1,5 @@
 from datetime import datetime
-from uuid import uuid4
+from nanoid import non_secure_generate
 
 from ._exceptions import ExcExpectedNamesArguments
 from ._logger import get_logger
@@ -52,7 +52,7 @@ class BaseSaveManager:
     @property
     def uuid(self):
         if self.add_uuid:
-            return "_" + str(uuid4()).split("-")[0]
+            return "_" + str(non_secure_generate(size=10))
         return ''
 
     def _get_json_file_name(self, names: tuple):

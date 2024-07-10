@@ -1,5 +1,4 @@
 from httpx import Response as HttpxResponse
-from requests import Response as RequestResponse
 
 from ._config import Settings
 from ._exceptions import ProxyManagerHttpException
@@ -49,7 +48,7 @@ class BaseProxyManager:
             self._data["ignore_hours"] = item
     
     @staticmethod
-    def _raise_if_not_200(response: HttpxResponse | RequestResponse) -> None:
+    def _raise_if_not_200(response: HttpxResponse) -> None:
         try:
             response.raise_for_status()
         except: 
@@ -64,7 +63,7 @@ class BaseProxyManager:
     def data(self) -> dict:
         return self._data.copy()
 
-    def _new_proxy(self, response: HttpxResponse | RequestResponse) -> ProxySchema:
+    def _new_proxy(self, response: HttpxResponse) -> ProxySchema:
         data = response.json()
         proxy = ProxySchema(**data)
         self.logger.debug(f"get new {proxy}")

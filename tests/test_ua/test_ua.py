@@ -1,4 +1,4 @@
-from mangust228.ua_random import UaRandom
+from mangust228.ua import UaRandom
 
 
 def test_validate_agents():

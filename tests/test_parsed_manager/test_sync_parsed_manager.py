@@ -1,7 +1,7 @@
 import os
 
-from mangust228.parsed_manager import SyncParsedManager
-from mangust228.parsed_manager.sync_manager import (
+from mangust228.parsed import SyncParsedManager
+from mangust228.parsed.sync_manager import (
     _SuccessSyncFileDesciptor, _WrongSyncFileDesciptor)
 
 

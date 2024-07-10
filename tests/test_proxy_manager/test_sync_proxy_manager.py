@@ -2,8 +2,8 @@ import httpx
 import pytest
 from pytest_httpx import HTTPXMock
 
-from mangust228.proxy_manager import ProxySchema, SyncProxyManager
-from mangust228.proxy_manager._exceptions import ProxyManagerHttpException
+from mangust228.proxy import ProxySchema, SyncProxyManager
+from mangust228.proxy._exceptions import ProxyManagerHttpException
 
 mock_data_1 = {
     "id": 1, 

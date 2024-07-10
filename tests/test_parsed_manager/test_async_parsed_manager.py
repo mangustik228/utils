@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-from mangust228.parsed_manager import AsyncParsedManager
-from mangust228.parsed_manager.async_manager import (
+from mangust228.parsed import AsyncParsedManager
+from mangust228.parsed.async_manager import (
     _SuccessAsyncFileDesciptor, _WrongAsyncFileDesciptor)
 
 
