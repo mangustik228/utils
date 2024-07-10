@@ -26,19 +26,19 @@ class AsyncProxyManager(BaseProxyManager):
 
     async def get(self) -> ProxySchema:
         response = await self.client.get("/proxies/rotations/one", params=self.params)
-        response.raise_for_status()
+        self._raise_if_not_200(response)
         return self._new_proxy(response)
 
     async def free(self, proxy: ProxySchema) -> None:
         response = await self.client.get(f"/proxies/rotations/free/{proxy.id}")
-        response.raise_for_status()
+        self._raise_if_not_200(response)
         self.logger.info(f'{proxy} is free')
 
     async def change_without_error(self, proxy: ProxySchema) -> ProxySchema:
         data = self.data
         data["proxy_id"] = proxy.id
         response = await self.client.put(f"/proxies/rotations", json=data)
-        response.raise_for_status()
+        self._raise_if_not_200(response)
         self.logger.info(f'{proxy} changed without error')
         return self._new_proxy(response)
 
@@ -47,6 +47,6 @@ class AsyncProxyManager(BaseProxyManager):
         data["proxy_id"] = proxy.id
         data["reason"] = reason
         response = await self.client.patch("/proxies/rotations", json=data)
-        response.raise_for_status()
+        self._raise_if_not_200(response)
         self.logger.info(f'{proxy} changed with error')
         return self._new_proxy(response)

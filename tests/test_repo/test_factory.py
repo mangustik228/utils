@@ -1,6 +1,6 @@
 import pytest
 
-from mangust228.utils.repo import AsyncBaseRepo, AsyncBaseRepoFactory
+from mangust228.repo import AsyncBaseRepo, AsyncBaseRepoFactory
 from tests.test_repo.utils import (Base, RoleModel, UserModel,
                                    session_maker, sync_engine)
 

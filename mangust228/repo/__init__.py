@@ -6,8 +6,8 @@ Example to use:
 from mangust228.utils.repo import AsyncBaseRepo, AsyncBaseRepoFactory
 
 # Note the inheritance in the class! It's important for correct hinting.
-class UserRepo(AsyncBaseRepo[MyModel]):
-    model = MyModel
+class UserRepo(AsyncBaseRepo[UserModel]):
+    model = UserModel
 
 class Repository(AsyncBaseRepoFactory):
     # CAUTION: Use only annotation
