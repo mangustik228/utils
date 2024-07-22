@@ -18,9 +18,10 @@ class SyncBaseRepo[M: DeclarativeBase]:
     SessionLocal = sessionmaker(bind=engine)
     
     class UserRepo(SyncBaseRepo[MyAlchemyModel]):
-        session = SessionLocal
+        model = UserModel
         
     class Repository(SyncBaseRepoFactory):
+        session = SessionLocal 
         user: UserRepo
     ```
     '''

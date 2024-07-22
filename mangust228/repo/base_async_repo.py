@@ -17,9 +17,10 @@ class AsyncBaseRepo[M: DeclarativeBase]:
     async_session = async_sessionmaker(engine)
     
     class UserRepo(AsyncBaseRepo[MyAlchemyModel]):
-        session = async_session
+        model = UserModel
         
     class Repository(AsyncBaseRepoFactory):
+        session = SessionLocal
         user: UserRepo
     ```
     '''
