@@ -15,7 +15,7 @@ extras['all'] = sum(extras.values(), [])
 
 setup(
     name="mangust228",
-    version="0.8.22",
+    version="0.8.23",
     description="Lazy utils each I use sometimes",
     author="mangust228",
     author_email="bacek.mangust@gmail.com",
