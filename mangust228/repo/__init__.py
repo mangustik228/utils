@@ -27,3 +27,5 @@ async with Repository() as repo:
 
 from .base_async_repo import AsyncBaseRepo
 from .factory_async_repo import AsyncBaseRepoFactory
+from .base_sync_repo import SyncBaseRepo
+from .factory_sync_repo import SyncBaseRepoFactory
