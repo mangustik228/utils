@@ -1,31 +1,32 @@
 from typing import Any, Sequence
 
 from sqlalchemy import delete, func, insert, select, update
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 from sqlalchemy.orm import DeclarativeBase
 
 
-class AsyncBaseRepo[M: DeclarativeBase]:
+class SyncBaseRepo[M: DeclarativeBase]:
     '''
-    Base repository for asynchronous operations with SQLAlchemy models.
+    Base repository for synchronous operations with SQLAlchemy models.
     
     How to use: 
     ```python 
-    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
     
-    engine = create_async_engine(url)
-    async_session = async_sessionmaker(engine)
+    engine = create_engine(url)
+    SessionLocal = sessionmaker(bind=engine)
     
-    class UserRepo(AsyncBaseRepo[MyAlchemyModel]):
-        session = async_session
+    class UserRepo(SyncBaseRepo[MyAlchemyModel]):
+        session = SessionLocal
         
-    class Repository(AsyncBaseRepoFactory):
+    class Repository(SyncBaseRepoFactory):
         user: UserRepo
     ```
     '''
     model: type[M]
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: Session):
         self.session = session
 
     def add_by_model(self, model: M) -> None:
@@ -34,7 +35,7 @@ class AsyncBaseRepo[M: DeclarativeBase]:
         
         Example: 
         ```python
-        async with Repository() as repo: 
+        with Repository() as repo: 
             my_model = MyModel(**some_data)
             repo.user.add_by_model(my_model)
         ```
@@ -43,7 +44,7 @@ class AsyncBaseRepo[M: DeclarativeBase]:
         '''
         self.session.add(model)
     
-    async def add_by_kwargs(self, **kwargs: Any) -> M:
+    def add_by_kwargs(self, **kwargs: Any) -> M:
         ''' Add an item and return the SQLAlchemy model instance.
         
         :param kwargs: Fields and values for the new record.
@@ -53,35 +54,33 @@ class AsyncBaseRepo[M: DeclarativeBase]:
         
         ```python
         # add new user: 
-        async with Repository() as repo: 
+        with Repository() as repo: 
             repo.user.add(name="Ivan", surname="Ivanov")
         ```
         '''
-        stmt = insert(self.model)\
-            .values(**kwargs)\
-            .returning(self.model)  # type: ignore
-        result = await self.session.execute(stmt)
+        stmt = insert(self.model).values(**kwargs).returning(self.model)  # type: ignore
+        result = self.session.execute(stmt)
         return result.scalar_one()
 
-    async def delete(self, **by_filter: Any) -> None:
+    def delete(self, **by_filter: Any) -> None:
         '''Delete records based on filter criteria.
         
         :param by_filter: Filter criteria as keyword arguments.
-        :return: Number of rows deleted.
+        :return: None
         
         Example:
         ```python
-        async with Repository() as repo:
+        with Repository() as repo:
             # Delete user with id=5
-            await repo.user.delete(id=5)
+            repo.user.delete(id=5)
             # Delete users where name="Ivan"
-            await repo.user.delete(name="Ivan")
+            repo.user.delete(name="Ivan")
         ```
         '''
         stmt = delete(self.model).filter_by(**by_filter)
-        await self.session.execute(stmt)
+        self.session.execute(stmt)
 
-    async def update_by_id(self, id: int, **new_values: Any) -> M | None:
+    def update_by_id(self, id: int, **new_values: Any) -> M | None:
         '''
         Update values by id.
         
@@ -91,17 +90,15 @@ class AsyncBaseRepo[M: DeclarativeBase]:
         
         Example:
         ```python
-        async with Repository() as repo:
-            await repo.user.update_by_id(id=5, name="Ivan")
+        with Repository() as repo:
+            repo.user.update_by_id(id=5, name="Ivan")
         ```
         '''
-        stmt = update(self.model)\
-            .values(**new_values)\
-            .where(self.model.id == id).returning(self.model) # type: ignore  
-        item = await self.session.execute(stmt)
-        return item.scalar_one_or_none()
+        stmt = update(self.model).values(**new_values).where(self.model.id == id).returning(self.model)  # type: ignore
+        result = self.session.execute(stmt)
+        return result.scalar_one_or_none()
 
-    async def get_one_or_none(self, **by_filter: Any) -> M | None:
+    def get_one_or_none(self, **by_filter: Any) -> M | None:
         '''
         Get a single record based on filter criteria.
         
@@ -110,20 +107,20 @@ class AsyncBaseRepo[M: DeclarativeBase]:
         
         Example:
         ```python
-        async with Repository() as repo:
-            user = await repo.user.get_one_or_none(id=3)
+        with Repository() as repo:
+            user = repo.user.get_one_or_none(id=3)
         # >> None
         ```
         Note: Be careful when using filters that couldn't return multiple rows.
         '''
         stmt = select(self.model).filter_by(**by_filter)
-        result = await self.session.execute(stmt)
+        result = self.session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_many(self,
-                       limit: int | None = None,
-                       offset: int | None = None,
-                       **by_filter: Any) -> Sequence[M]:
+    def get_many(self,
+                 limit: int | None = None,
+                 offset: int | None = None,
+                 **by_filter: Any) -> Sequence[M]:
         '''
         Get multiple records based on filter criteria.
         
@@ -134,18 +131,15 @@ class AsyncBaseRepo[M: DeclarativeBase]:
         
         Example:
         ```python
-        async with Repository() as repo:
-            users = await repo.user.get_many(role="moderator")
+        with Repository() as repo:
+            users = repo.user.get_many(role="moderator")
         ```
         '''
-        stmt = select(self.model)\
-            .filter_by(**by_filter)\
-            .limit(limit)\
-            .offset(offset)
-        result = await self.session.execute(stmt)
+        stmt = select(self.model).filter_by(**by_filter).limit(limit).offset(offset)
+        result = self.session.execute(stmt)
         return result.scalars().all()
     
-    async def count(self, **filter_by: Any) -> int:
+    def count(self, **filter_by: Any) -> int:
         '''
         Get the count of rows in the table based on filter criteria.
         
@@ -154,13 +148,13 @@ class AsyncBaseRepo[M: DeclarativeBase]:
         
         Example:
         ```python
-        async with Repository() as repo:
+        with Repository() as repo:
             # Count documents where role="admin"
-            count = await repo.user.count(role="admin")
+            count = repo.user.count(role="admin")
             # Count all documents in the table
-            total_count = await repo.user.count()
+            total_count = repo.user.count()
         ```
         '''
         stmt = select(func.count()).select_from(self.model).filter_by(**filter_by)
-        result = await self.session.execute(stmt)
+        result = self.session.execute(stmt)
         return result.scalar_one()

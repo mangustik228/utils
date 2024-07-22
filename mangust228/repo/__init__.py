@@ -26,4 +26,4 @@ async with Repository() as repo:
 '''
 
 from .base_async_repo import AsyncBaseRepo
-from .factory_repo import AsyncBaseRepoFactory
+from .factory_async_repo import AsyncBaseRepoFactory
